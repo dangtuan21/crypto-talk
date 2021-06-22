@@ -1,15 +1,14 @@
 export type RootStackParamList = {
   Root: undefined;
   NotFound: undefined;
+  Friends: undefined;
   Contacts: undefined;
   ChatRoom: undefined;
 };
 
 export type MainTabParamList = {
-  Camera: undefined;
-  Chats: undefined;
-  Status: undefined;
-  Calls: undefined;
+  Friends: undefined;
+  Contacts: undefined;
 };
 
 export type TabOneParamList = {

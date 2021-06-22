@@ -1,6 +1,7 @@
 read.txt
 
 # Logs
+.expo
 .firebase
 logs
 *.log

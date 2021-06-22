@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import {FlatList, StyleSheet, Text} from 'react-native';
 import { View } from '../components/Themed';
-import ChatListItem from '../components/ChatListItem';
+import FriendItem from '../components/FriendItem';
 
 // import chatRooms from '../data/ChatRooms';
 import NewMessageButton from "../components/NewMessageButton";
 import { getSignedInUser } from "../util/util";
 
-export default function ChatsScreen() {
+export default function FriendListScreen() {
   const signedInUser = getSignedInUser();
   const friends = signedInUser.friends;
 
-debugger
   if (friends.length === 0) { 
     return (
     <View style={styles.container}>
@@ -26,10 +25,10 @@ debugger
       <FlatList
         style={{width: '100%'}}
         data={friends}
-        renderItem={({ item }: any) => <ChatListItem chatRoom={item} />}
+        renderItem={({ item }: any) => <FriendItem friend={item} />}
         keyExtractor={(item: any) => item.userId}
       />
-      <NewMessageButton />
+      {/* <NewMessageButton /> */}
     </View>
   );
 }
