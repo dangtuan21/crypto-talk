@@ -3,12 +3,15 @@ import {
   View,
   Text,
   Image,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Button
 } from "react-native";
 import { ChatRoom } from "../../types";
 import styles from "./style";
 import moment from "moment";
 import { useNavigation } from '@react-navigation/native';
+import { getSignedInUser, messageService, setSignedInUser } from '../../util/util';
+import { addFriendToUser } from '../../api/DbServices';
 
 export type ContactItemProps = {
   contact: any;
@@ -19,17 +22,19 @@ const ContactItem = (props: ContactItemProps) => {
 
   const navigation = useNavigation();
 
-  // const user = chatRoom.users[1];
+  const onAddClick = async () => {
+    const friend = Object.assign({}, contact);
+    delete friend.friends;
+    let signedInUser = getSignedInUser();
+    await addFriendToUser(signedInUser, friend);
 
-  const onClick = () => {
-    // navigation.navigate('ChatScreen', {
-    //   id: chatRoom.id,
-    //   name: user.name,
-    // })
-  }
+    setSignedInUser(signedInUser);
+    messageService.sendMessage("AddFriendDone");
+  };
+  
 
   return (
-    <TouchableWithoutFeedback onPress={onClick}>
+    <TouchableWithoutFeedback >
       <View style={styles.container}>
         <View style={styles.lefContainer}>
           <Image source={{ uri: contact.avatar }} style={styles.avatar}/>
@@ -40,7 +45,11 @@ const ContactItem = (props: ContactItemProps) => {
           </View>
 
         </View>
-
+        <Button
+          title="Add"
+          color="#f194ff"
+          onPress={() => onAddClick()}
+        />
         {/* <Text style={styles.time}>
           {moment(contact.lastMessage.createdAt).format("DD/MM/YYYY")}
         </Text> */}

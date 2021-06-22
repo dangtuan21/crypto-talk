@@ -6,16 +6,18 @@ import { fetchNotFriendContacts, findUser } from "../api/DbServices";
 import { getSignedInUser, messageService, setSignedInUser } from "../util/util";
 
 export default function ContactListScreen() {
+  console.log('ttt ContactListScreen');
   const [showLoading, setShowLoading] = useState(false);
   let [subscription, setSubscription]: [any, any] = useState(undefined);
   let [contacts, setContacts]: [any[], any] = useState([]);
 
   //  DidMount
   useEffect(() => {
+    console.log('ContactListScreen DidMount')
     setShowLoading(true);
     const getContacts = async (signedInUser: any) => {
-      contacts = await fetchNotFriendContacts(signedInUser);
-      setContacts(contacts);
+      const _contacts = await fetchNotFriendContacts(signedInUser);
+      setContacts(_contacts);
       setShowLoading(false);
     };
 
@@ -24,12 +26,12 @@ export default function ContactListScreen() {
     getContacts(signedInUser);
 
     // subscribe to home component messages
-    const subs = messageService.getMessage().subscribe(async (message) => {
-      if (message) {
-        signedInUser = await findUser(signedInUser.userId);
-        setSignedInUser(signedInUser);
+    const subs = messageService.getMessage().subscribe(async ({message}: any) => {
+      if (message === 'AddFriendDone') {
+        const _signedInUser = await findUser(signedInUser.userId);
+        setSignedInUser(_signedInUser);
 
-        getContacts(signedInUser);
+        getContacts(_signedInUser);
       }
     });
 

@@ -3,16 +3,18 @@ import {Text, View} from 'react-native';
 import { Message } from "../../types";
 import moment from "moment";
 import styles from './styles';
+import { getSignedInUser } from '../../util/util';
 
 export type ChatMessageProps = {
-  message: Message;
+  message: any;
 }
 
 const ChatMessage = (props: ChatMessageProps) => {
   const { message } = props;
 
   const isMyMessage = () => {
-    return message.user.id === 'u1';
+    const signedInUser = getSignedInUser();
+    return message.sent_by === signedInUser.userId;
   }
 
   return (
@@ -24,9 +26,9 @@ const ChatMessage = (props: ChatMessageProps) => {
           marginRight: isMyMessage() ? 0 : 50,
         }
       ]}>
-        {!isMyMessage() && <Text style={styles.name}>{message.user.name}</Text>}
-        <Text style={styles.message}>{message.content}</Text>
-        <Text style={styles.time}>{moment(message.createdAt).fromNow()}</Text>
+        {/* {!isMyMessage() && <Text style={styles.name}>{message.user.name}</Text>} */}
+        <Text style={styles.message}>{message.message}</Text>
+        <Text style={styles.time}>{moment(message.time).fromNow()}</Text>
       </View>
     </View>
   )

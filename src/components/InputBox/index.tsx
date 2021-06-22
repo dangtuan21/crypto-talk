@@ -9,22 +9,50 @@ import {
   Entypo,
   Fontisto,
 } from '@expo/vector-icons';
+import { sendMessageBody } from '../../api/DbServices';
+import { v4 } from "uuid";
 
-const InputBox = () => {
+export type InputBoxProps = {
+  sender: any,
+  receiver: any;
+}
 
+const InputBox = (props: InputBoxProps) => {
+  const sender = props.sender;
+  const receiver = props.receiver;
   const [message, setMessage] = useState('');
 
   const onMicrophonePress = () => {
     console.warn('Microphone')
   }
 
-  const onSendPress = () => {
+  const onSendPress = async () => {
     console.warn(`Sending: ${message}`)
 
     // send the message to the backend
-
+    await sendMessage('text', message);
+    //  empty the message box
     setMessage('');
   }
+
+  const sendMessage = async (
+    type: string = "text",
+    file: string | undefined
+  ) => {
+    if (message || type === "media") {
+      let messageBody = {
+        messageId: v4(),
+        sent_by: sender.userId,
+        channel: `${sender.userId},${receiver.userId}`,
+        type: type,
+        message: message || "",
+        file_url: file,
+        time: +Date.now(),
+      };
+      console.log('ttt sendMessageBody ', sendMessageBody);
+      await sendMessageBody(messageBody);
+    }
+  };  
 
   const onPress = () => {
     if (!message) {

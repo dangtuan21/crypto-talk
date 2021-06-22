@@ -5,21 +5,36 @@ import FriendItem from '../components/FriendItem';
 
 // import chatRooms from '../data/ChatRooms';
 import NewMessageButton from "../components/NewMessageButton";
-import { getSignedInUser } from "../util/util";
+import { getSignedInUser, messageService } from "../util/util";
 
 export default function FriendListScreen() {
-  const signedInUser = getSignedInUser();
-  const friends = signedInUser.friends;
+  let [friends, setFriends]: [any[], any] = useState([]);
+  let [subscription, setSubscription]: [any, any] = useState(undefined);
 
-  if (friends.length === 0) { 
-    return (
-    <View style={styles.container}>
-      <Text>No friends!</Text>
-    </View>
+  //  DidMount
+  useEffect(() => {
+    const signedInUser = getSignedInUser();
+    setFriends(signedInUser.friends);
+      console.log('ttt111 get friends  ', friends.length);
+    // subscribe to home component messages
+    const subs = messageService.getMessage().subscribe(async ({message} : any) => {
+      if (message === 'AddFriendDone') {
+        const _signedInUser = getSignedInUser();
+        setFriends(_signedInUser.friends);
+      }
+    });
 
-    );
-  }
+    setSubscription(subs);
+  }, []);
 
+  //  WillUnMount
+  useEffect(() => {
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }      
+    };
+  }, []);   
   return (
     <View style={styles.container}>
       <FlatList
