@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {FlatList, StyleSheet, Text} from 'react-native';
-import { View } from '../components/Themed';
-import FriendItem from '../components/FriendItem';
+import { FlatList, StyleSheet, Text } from "react-native";
+import { View } from "../components/Themed";
+import FriendItem from "../components/FriendItem";
 
 // import chatRooms from '../data/ChatRooms';
 import NewMessageButton from "../components/NewMessageButton";
@@ -15,14 +15,15 @@ export default function FriendListScreen() {
   useEffect(() => {
     const signedInUser = getSignedInUser();
     setFriends(signedInUser.friends);
-      console.log('ttt111 get friends  ', friends.length);
     // subscribe to home component messages
-    const subs = messageService.getMessage().subscribe(async ({message} : any) => {
-      if (message === 'AddFriendDone') {
-        const _signedInUser = getSignedInUser();
-        setFriends(_signedInUser.friends);
-      }
-    });
+    const subs = messageService
+      .getMessage()
+      .subscribe(async ({ message }: any) => {
+        if (message === "AddFriendDone") {
+          const _signedInUser = getSignedInUser();
+          setFriends(_signedInUser.friends);
+        }
+      });
 
     setSubscription(subs);
   }, []);
@@ -32,13 +33,13 @@ export default function FriendListScreen() {
     return () => {
       if (subscription) {
         subscription.unsubscribe();
-      }      
+      }
     };
-  }, []);   
+  }, []);
   return (
     <View style={styles.container}>
       <FlatList
-        style={{width: '100%'}}
+        style={{ width: "100%" }}
         data={friends}
         renderItem={({ item }: any) => <FriendItem friend={item} />}
         keyExtractor={(item: any) => item.userId}
@@ -51,8 +52,7 @@ export default function FriendListScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
-
 });

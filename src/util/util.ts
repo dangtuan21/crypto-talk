@@ -1,4 +1,6 @@
 import { Subject } from "rxjs";
+import { v4 } from "uuid";
+import { sendMessageBody } from "../api/DbServices";
 
 export const isAuthenticated = () => {
   const tokenId = localStorage.getItem("tokenId");
@@ -16,11 +18,12 @@ export const getSignedInUser: any = () => {
   return jsonStringData ? JSON.parse(jsonStringData) : undefined;
 };
 
-export const setStorageObject = (value: string, key: string) => {
-  localStorage.setItem(key, value);
+export const setStorageObject = (key: string, value: any) => {
+  localStorage.setItem(key, JSON.stringify(value));
 };
-export const getStorageObject = (key: string): string | null => {
-  return localStorage.getItem(key);
+export const getStorageObject = (key: string): any => {
+  const objString = localStorage.getItem(key);
+  return objString ? JSON.parse(objString) : {};
 };
 
 const subject = new Subject();
@@ -29,4 +32,40 @@ export const messageService = {
   sendMessage: (message: any) => subject.next({ message }),
   clearMessages: () => subject.next(null),
   getMessage: () => subject.asObservable(),
+};
+
+export const sendText = async (
+  text: string = "text",
+  senderId: string,
+  receiverId: string
+) => {
+  const messageBody = {
+    messageId: v4(),
+    sent_by: senderId,
+    channel: `${senderId},${receiverId}`,
+    type: "text",
+    message: text || "",
+    file_url: "",
+    time: +Date.now(),
+  };
+  console.log("ttt sendText ", messageBody);
+  await sendMessageBody(messageBody);
+};
+
+export const sendPicture = async (
+  file: string,
+  senderId: string,
+  receiverId: string
+) => {
+  const messageBody = {
+    messageId: v4(),
+    sent_by: senderId,
+    channel: `${senderId},${receiverId}`,
+    type: "media",
+    message: "",
+    file_url: file,
+    time: +Date.now(),
+  };
+  console.log("ttt sendPicture ", sendMessageBody);
+  await sendMessageBody(messageBody);
 };

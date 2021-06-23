@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity,} from "react-native";
-import styles from './styles';
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import styles from "./styles";
 
 import {
   MaterialCommunityIcons,
@@ -8,59 +8,47 @@ import {
   FontAwesome5,
   Entypo,
   Fontisto,
-} from '@expo/vector-icons';
-import { sendMessageBody } from '../../api/DbServices';
-import { v4 } from "uuid";
+} from "@expo/vector-icons";
+import { sendMessageBody } from "../../api/DbServices";
+import { useNavigation } from "@react-navigation/native";
+import { sendText } from "../../util/util";
 
 export type InputBoxProps = {
-  sender: any,
+  sender: any;
   receiver: any;
-}
+};
 
 const InputBox = (props: InputBoxProps) => {
   const sender = props.sender;
   const receiver = props.receiver;
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   const onMicrophonePress = () => {
-    console.warn('Microphone')
-  }
+    console.warn("Microphone");
+  };
 
-  const onSendPress = async () => {
-    console.warn(`Sending: ${message}`)
+  const onSendText = async () => {
+    console.warn(`Sending: ${message}`);
 
     // send the message to the backend
-    await sendMessage('text', message);
+    await sendText(message, sender.userId, receiver.userId);
     //  empty the message box
-    setMessage('');
-  }
+    setMessage("");
+  };
 
-  const sendMessage = async (
-    type: string = "text",
-    file: string | undefined
-  ) => {
-    if (message || type === "media") {
-      let messageBody = {
-        messageId: v4(),
-        sent_by: sender.userId,
-        channel: `${sender.userId},${receiver.userId}`,
-        type: type,
-        message: message || "",
-        file_url: file,
-        time: +Date.now(),
-      };
-      console.log('ttt sendMessageBody ', sendMessageBody);
-      await sendMessageBody(messageBody);
-    }
-  };  
-
-  const onPress = () => {
+  const onSendTextOrVoice = () => {
     if (!message) {
       onMicrophonePress();
     } else {
-      onSendPress();
+      onSendText();
     }
-  }
+  };
+
+  const navigation = useNavigation();
+
+  const onCameraClick = () => {
+    navigation.navigate("CameraScreen", undefined);
+  };
 
   return (
     <View style={styles.container}>
@@ -74,17 +62,27 @@ const InputBox = (props: InputBoxProps) => {
           onChangeText={setMessage}
         />
         <Entypo name="attachment" size={24} color="grey" style={styles.icon} />
-        {!message && <Fontisto name="camera" size={24} color="grey" style={styles.icon} />}
+        {!message && (
+          <Fontisto
+            name="camera"
+            size={24}
+            color="grey"
+            style={styles.icon}
+            onPress={onCameraClick}
+          />
+        )}
       </View>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={onSendTextOrVoice}>
         <View style={styles.buttonContainer}>
-          {!message
-            ? <MaterialCommunityIcons name="microphone" size={28} color="white" />
-            : <MaterialIcons name="send" size={28} color="white" />}
+          {!message ? (
+            <MaterialCommunityIcons name="microphone" size={28} color="white" />
+          ) : (
+            <MaterialIcons name="send" size={28} color="white" />
+          )}
         </View>
       </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
 export default InputBox;

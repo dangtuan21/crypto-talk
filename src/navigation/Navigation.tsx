@@ -23,6 +23,7 @@ import ContactListScreen from "../screens/ContactListScreen";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import LoginScreen from "../screens/LoginScreen";
 import ChatScreen from "../screens/ChatScreen";
+import CameraScreen from "../screens/CameraScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -41,7 +42,7 @@ export default function Navigation({
         <Drawer.Screen name="Talk" component={RootNavigator} />
         {/* <Drawer.Screen name="About" component={AboutNavigator} /> */}
       </Drawer.Navigator>
-    </NavigationContainer>    
+    </NavigationContainer>
   );
 }
 
@@ -113,8 +114,9 @@ function RootNavigator() {
         })}
       />
       <Stack.Screen name="Contacts" component={ContactListScreen} />
-      <Stack.Screen 
-        name="ChatScreen" component={ChatScreen} 
+      <Stack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
         options={({ route }: any) => ({
           title: route.params.friend.username,
           headerRight: () => (
@@ -126,7 +128,7 @@ function RootNavigator() {
                 marginRight: 10,
               }}
             >
-               {/* <FontAwesome5 name="video" size={22} color={"white"} />
+              {/* <FontAwesome5 name="video" size={22} color={"white"} />
                <MaterialIcons name="call" size={22} color={"white"} /> */}
               <MaterialCommunityIcons
                 name="dots-vertical"
@@ -134,9 +136,26 @@ function RootNavigator() {
                 color={"white"}
               />
             </View>
-          ),          
+          ),
         })}
-      />      
+      />
+      <Stack.Screen
+        name="CameraScreen"
+        component={CameraScreen}
+        options={({ route }: any) => ({
+          title: "Camera",
+          headerRight: () => (
+            <View
+              style={{
+                flexDirection: "row",
+                width: 60,
+                justifyContent: "space-between",
+                marginRight: 10,
+              }}
+            ></View>
+          ),
+        })}
+      />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
