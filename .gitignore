@@ -1,4 +1,5 @@
 read.txt
+src/environments/*.*
 
 # Logs
 .expo
